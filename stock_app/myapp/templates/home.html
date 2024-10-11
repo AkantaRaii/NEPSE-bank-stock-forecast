@@ -1,0 +1,16 @@
+{% extends 'base.html'%}
+{% block content %}
+    <h1>STOCK PREDICTION</h1>
+    <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Company Name
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{% url 'stock' 'ADBL'%}">ADBL</a></li> 
+    <li><a class="dropdown-item" href="{% url 'stock' 'EBL'%}">EBL</a></li>
+    <li><a class="dropdown-item" href="{% url 'stock' 'NABIL'%}">NABIL</a></li>
+    <li><a class="dropdown-item" href="{% url 'stock' 'SANIMA'%}">SANIMA</a></li>
+    <li><a class="dropdown-item" href="{% url 'stock' 'NIFRA'%}">NIFRA</a></li>
+  </ul>
+</div>
+{% endblock%}
