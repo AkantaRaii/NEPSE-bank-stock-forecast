@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">{{ stock_name }}</h2>
+        
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Predicted Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in predicted_value %}
+                <tr>
+
+                    <td>{{ i }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
