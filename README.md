@@ -14,10 +14,10 @@ This is a web-based application for forecasting stock prices using machine learn
 
 The home page allows users to input their desired stock ticker and specify the forecasting horizon.
 
-![Home Page](home.png)
+![Home Page](images//home.png)
 
 ### Prediction Results
 
 After the model generates predictions, the app displays the predicted stock prices in a clear, easy-to-read format.
 
-![Predicted Results](predicted.png)
+![Predicted Results](images/predicted.png)
