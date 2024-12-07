@@ -3,13 +3,35 @@ from talib import abstract
 import pandas as pd
 from .fetch_stock_data import fetch
 
-lasso_selected_fetures = {'ADBL':['close', 'BOP', 'DX', 'EXPMA', 'SMA10', 'BOLL_upper'],
-            'NABIL':['close', 'noOfTransaction', 'change', 'BOP', 'DX', 'TRIX', 'OBV', 'ADOSC', 'ATR', 'TRANGE', 'HT_LEAD_SINE', 'KDJ.J', 'BOLL_middle', 'BOLL_lower', 'WR', 'PSY'],
-            'NIFRA':['close', 'OBV', 'SMA10'],
-            'SANIMA':['close', 'ADXR', 'BOP'],
-            'EBL':['low', 'close', 'BOP', 'OBV', 'BOLL_lower', 'AR']}
+import os
+from django.conf import settings 
+from .pca import apply_pca
 
-def get_selected_indicator(stock):
+
+def get_selected_indicator(stock,request_from):
+
+    lasso_selected_fetures = {
+            'ADBL': ['close', 'BOP', 'DX', 'EXPMA', 'SMA10', 'BOLL_upper'],
+            'CZBIL': ['low', 'close', 'ADXR', 'MAOBV'],
+            'EBL': ['low', 'close', 'BOP', 'OBV', 'BOLL_lower', 'AR'],
+            'GBIME': ['close', 'change', 'BOP', 'AR'],
+            'HBL': ['low', 'close', 'change', 'ADXR', 'TRANGE', 'BOLL_lower', 'PSY', 'AR'],
+            'KBL': ['low', 'close', 'BOP', 'DX'],
+            'MBL': ['close', 'BOP', 'OBV'],
+            'NABIL': ['close', 'noOfTransaction', 'change', 'BOP', 'DX', 'TRIX', 'OBV', 'ADOSC', 'ATR', 'TRANGE', 'HT_LEAD_SINE', 'KDJ.J', 'BOLL_middle', 'BOLL_lower', 'WR', 'PSY'],
+            'NBL': ['close', 'BOP'],   
+            'NICA': ['low', 'close', 'noOfTransaction', 'BOP', 'WILLR', 'OBV', 'HT_DCPHASE', 'HT_SINE', 'BOLL_lower', 'WR', 'PSY', 'BR'],
+            'NMB': ['close', 'volume', 'BOP', 'BBI', 'BOLL_middle', 'BOLL_lower'],
+            'PCBL': ['low', 'close', 'ADXR', 'BOP', 'BOLL_uppe r'],
+            'SANIMA': ['close', 'ADXR', 'BOP'],
+            'SBI': ['low', 'close', 'volume', 'BOP', 'BBI', 'BOLL_middle', 'BOLL_lower'],
+            'SBL': ['low', 'close', 'BOP', 'BOLL_lower'],
+            'SCB': ['close', 'ADXR', 'BOP', 'DX', 'RSI', 'WILLR', 'OBV', 'HT_PHASOR_real', 'BBI', 'BOLL_lower', 'WR', 'PSY', 'AR'],
+            'PRVU': ['close', 'BOP', 'TRIX', 'ATR', 'AR'],
+            'NIMB': ['close', 'volume', 'change', 'ADXR', 'BOP', 'TRIX', 'NATR', 'KDJ.K', 'KDJ.J'],
+            'LSL': ['close', 'volume', 'TRIX', 'MFI', 'HT_SINE', 'KDJ.J']
+        }
+
     # Load the df for the current stock
     df = fetch(stock)
 
@@ -77,10 +99,16 @@ def get_selected_indicator(stock):
     # BRAR (Bullish and Bearish Resistance and Support Indicator) - Custom calculation
     df['BR'] = talib.SMA(df['close'] - df['low'], timeperiod=26) / talib.SMA(df['high'] - df['low'], timeperiod=26)
     df['AR'] = talib.SMA(df['high'] - df['open'], timeperiod=26) / talib.SMA(df['open'] - df['low'], timeperiod=26)
-    lasso_selected_fetures[stock].insert(0,'date')
-    df=df[lasso_selected_fetures[stock]]
     df = df.dropna()
-    
+    df.to_csv(os.path.join(settings.BASE_DIR,'../','data','data_with_indicator',f'i{stock}.csv'), index=False)
 
-    print(f'\nlast date in select indicator {df['date'].iloc[-1]} and closeing is{df['close'].iloc[-1]}\n')
-    return df
+    if request_from=='pca':
+        pca_df=apply_pca(stock,data=df)
+        return pca_df
+
+    if request_from=='lasso':
+        lasso_selected_fetures[stock].insert(0,'date')
+        df=df[lasso_selected_fetures[stock]]
+        df.to_csv(os.path.join(settings.BASE_DIR,'../','data','lasso_data',f'l{stock}.csv'), index=False)
+        return df
+# get_selected_indicator("EBL")

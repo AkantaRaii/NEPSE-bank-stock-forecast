@@ -7,17 +7,21 @@
         <table class="table table-bordered table-striped mt-3">
             <thead class="thead-dark">
                 <tr>
-                    <th>Predicted Value</th>
+                    <th>Date</th>
+
+                    <th>Lasso Predicted Value</th>
+                    <th>pca Predicted Value</th>
+
                 </tr>
             </thead>
-            <tbody>
-                {% for i in predicted_value %}
-                <tr>
+           <tbody>
+    <tr>
+        <td>{{ date }}</td>
+        <td>{{ lasso_predicted_value }}</td>
+        <td>{{pca_predicted_value}}</td>
+    </tr>
+</tbody>
 
-                    <td>{{ i }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
         </table>
     </div>
 {% endblock %}

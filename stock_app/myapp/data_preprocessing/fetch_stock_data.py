@@ -3,11 +3,12 @@ import json
 import numpy as np
 import pandas
 from datetime import datetime,timedelta
-
+import os
+from django.conf import settings
 
 entries = '4000'
-start_date =str(datetime.today().date()-timedelta(days=100))
-today = str(datetime.today().date()-timedelta(days=1))
+start_date =str(datetime.today().date()-timedelta(days=500))
+today = str(datetime.today().date()-timedelta(days=0))
 
 
 def fetch(stock):
@@ -15,7 +16,7 @@ def fetch(stock):
     response = requests.get(url)
     jsn = response.json()
     stock_data = jsn.get('result').get('data')
-    
+    print(today)
     data = []
     for row in stock_data:
         temp = [
@@ -36,14 +37,12 @@ def fetch(stock):
     data.reverse()
     
     df = pandas.DataFrame(data, columns=head)
-    print(f'\nlast date in fetching {df['date'].iloc[-1]}and TXN is{df['noOfTransaction'].iloc[-1]}\n')
-    print(f'\nlast date in fetching {df['date'].iloc[-2]}and TXN is{df['noOfTransaction'].iloc[-2]}\n')
 
     if df['date'].iloc[-1]==df['date'].iloc[-2]:
         df=df.drop(df.index[-1])
     if df['noOfTransaction'].iloc[-1]==0.0:
         df=df.drop(df.index[-1])
-    print(f'\nlast date in fetching {df['date'].iloc[-1]}and TXN is{df['noOfTransaction'].iloc[-1]}\n')
-    print(f'\nlast date in fetching {df['date'].iloc[-2]}and TXN is{df['noOfTransaction'].iloc[-2]}\n')
+    df.to_csv(os.path.join(settings.BASE_DIR,'../','data','raw_data',f'{stock}.csv'), index=False)
+
+
     return df
-fetch('EBL')
